@@ -1,0 +1,6 @@
+<label for="topic-name">Select topic:</label>
+<select name="topic-select" id="topic-name"  ONCHANGE="location = '/faq/' + this.options[this.selectedIndex].value;" >
+  {% for topic in topics %}
+  <option value="{{topic.pk}}"> {{ topic.name }} </option>
+  {% endfor %}
+</select>

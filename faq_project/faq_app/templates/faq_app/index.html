@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="ru"> <!--<![endif]-->
+{% load static %}
+<head>
+
+	<meta charset="utf-8">
+
+	<title>Django Pulse-Survey application</title>
+	<meta name="description" content="">
+
+	<!-- Bootstrap v3.3.4 Grid Styles -->
+
+	<!-- Header CSS (First Sections of Website: paste after release from _header.min.css here) -->
+	<style></style>
+
+	<!-- Load Main CSS Compilled without JS -->
+	<noscript>
+
+	</noscript>
+	<link rel="stylesheet" href="{% static 'faq_app/css/header.min.css'%}">
+	<link rel="stylesheet" href="{% static 'faq_app/css/main.min.css'%}">
+
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="shortcut icon" href="{% static 'faq_app/img/favicon/favicon.ico'%}" type="image/x-icon">
+	<link rel="apple-touch-icon" href="{% static 'faq_app/img/favicon/apple-touch-icon.png'%}">
+	<link rel="apple-touch-icon" sizes="72x72" href="{% static 'faq_app/img/favicon/apple-touch-icon-72x72.png'%}">
+	<link rel="apple-touch-icon" sizes="114x114" href="{% static 'faq_app/img/favicon/apple-touch-icon-114x114.png'%}">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+
+<body>
+	<!-- Здесь пишем код -->
+	<header>
+		<div class="top-mnu">
+			<div class="container">
+				<nav class="nav-icons-left">
+					<ul>
+						<li><a href="{% url 'index' %}">joboti</a></li>
+						<li><a href="{% url 'index' %}"><span class="glyphicon glyphicon-home"></span></a></li>
+						<li><a href="{% url 'index' %}">Pulse-Survey</a></li>
+					</ul>
+				</nav>
+				<nav class="nav-icons-right">
+					<ul>
+						<li><a href="#"><span class="glyphicon glyphicon-cog"></span></a></li>
+						<li><a href="#"><span class="glyphicon glyphicon-bell"></span></a></li>
+						<li><a href="#"><span class="glyphicon glyphicon-th"></span></a></li>
+						<li><a href="#"><img src="{% static 'faq_app/img/avatar.png'%}" alt=""></a></li>
+					</ul>
+				</nav>
+			</div>
+		</div>
+		<div class="header-content">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-offset-1 col-md-10">
+						<div class="creating-topic-box">
+							<h2>{{ current_topic.name }}</h2>
+							<figure>
+								<figcaption>Description:</figcaption>
+								<ul>
+									<li><p>You can create 1 or more surveys, which will be triggered and send to all users on a certain moment.</p></li>
+									<li>Questions can be divided in ‘chat bubbles’ to create a ‘conversation flow’</li>
+								</ul>
+							</figure>
+							<div class="bottom-content-wrapper">
+								<div class="select-topic">
+									<label for="topic-name">Select survey:</label>
+									<select name="topic-select" id="topic-name"  ONCHANGE="location = '/faq/' + this.options[this.selectedIndex].value;" >
+										{% for topic in topics %}
+										<option value="{{topic.pk}}"> {{ topic.name }} </option>
+										{% endfor %}
+									</select>
+								</div>
+								<div class="buttons">
+									<button class="btn btn-space btn-primary hover" onclick="window.open('{% url 'create_json' pk=current_topic.pk %}')" >Save All / Train</button>
+									<button class="btn btn-space btn-primary js-new-topic">New survey <span class="glyphicon glyphicon-plus-sign"></span></button>
+									<button class="btn btn-space btn-primary js-new-group" data-url="{% url 'create_group' pk=current_topic.pk %}">New Question <span class="glyphicon glyphicon-plus-sign"></span></button>
+								</div>
+							</div>
+						</div>
+						<div id="accordion2" class="panel-group accordion accordion-color">
+							{% for group in current_topic.groups.all %}
+							<div class="panel panel-full-primary">
+								<div class="panel-heading">
+									<h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion2" href="#collapse-{{group.pk}}"><i class="icon mdi mdi-chevron-down"></i> {{ group.questions.first.text }}</a></h4>
+									<div class="switchbutton-glyphicon-wrapper">
+										<div class="switch-button switch-button-sm">
+											<input class="js-switch-published" type="checkbox" {% if group.is_active %} checked {% endif %} data-url="/faq/update_group/{{group.pk}}/" name="swt{{group.pk}}" id="swt{{group.pk}}"><span>
+											<label for="swt{{group.pk}}"></label></span>
+										</div>
+										<span class="glyphicon glyphicon-remove-circle js-delete-group" data-url="{% url 'delete_group' pk=group.pk %}"></span>
+									</div>
+								</div>
+								<div id="collapse-{{group.pk}}" class="panel-collapse collapse">
+									<div class="panel-body">
+										<input type="text" class="form-control tkn" data-delimiter="/"  id="tokenfield{{group.pk}}" group-id="{{group.pk}}" placeholder="Type something"/>
+										<span class="fields{{group.pk}}">
+											{% for answer in group.answers.all %}
+												{% if answer.kind == '0' %}
+												<div class="control-group" id="fields">
+													<div class="controls">
+														<form role="form" autocomplete="off">
+															<div class="entry input-group col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 col-xs-12">
+																<input class="form-control" name="fields[]" value="{{answer.text}}" type="text" disabled >
+																<span class="input-group-btn">
+																	<button class="btn btn-success js-edit-answer" data-url="{% url 'update_answer' pk=answer.pk %}" type="button">
+																		<span class="glyphicon glyphicon-cog"></span>
+																	</button>
+																	<button class="btn btn-danger js-delete-answer" data-url="{% url 'delete_answer' pk=answer.pk %}" type="button">
+																		<span class="glyphicon glyphicon-minus"></span>
+																	</button>
+																</span>
+															</div>
+														</form>
+													</div>
+												</div>
+												{% endif %}
+
+												{% if answer.kind == '1' %}
+												<div class="img-wrapper col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 col-xs-12" style="margin-top: 15px; margin-bottom: 15px; text-align: right">
+													<div class="img-wrapper" style=" display: inline-block; margin-right: 25px;"><img src="{{ answer.text }}" alt="" style="border-radius: 10px; max-width: 45px"></div>
+													<span class="input-group-btn" style="display: inline-block; float: right; margin-right: 47px;">
+														<button class="btn btn-success js-edit-answer" data-url="{% url 'update_answer' pk=answer.pk %}" style="height: 38px; width: 35px" type="button">
+															<span class="glyphicon glyphicon-cog"></span>
+														</button>
+														<button class="btn btn-danger js-delete-answer" data-url="{% url 'delete_answer' pk=answer.pk %}" style="height: 38px; width: 35px" type="button">
+															<span class="glyphicon glyphicon-minus"></span>
+														</button>
+													</span>
+												</div>
+
+												{% endif %}
+
+												{% if answer.kind == '2' %}
+												<div class="control-group" id="fields">
+													<div class="controls">
+														<form role="form" autocomplete="off">
+															<div class="entry input-group col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 col-xs-12">
+																<a class="input-group-links" target="_blank" href="{{answer.text}}" >Video:    {{answer.text}}</a>
+																<span class="input-group-btn">
+																	<button class="btn btn-success js-edit-answer" data-url="{% url 'update_answer' pk=answer.pk %}" type="button">
+																		<span class="glyphicon glyphicon-cog"></span>
+																	</button>
+																	<button class="btn btn-danger js-delete-answer" data-url="{% url 'delete_answer' pk=answer.pk %}" type="button">
+																		<span class="glyphicon glyphicon-minus"></span>
+																	</button>
+																</span>
+															</div>
+														</form>
+													</div>
+												</div>
+												{% endif %}
+
+												{% if answer.kind == '3' %}
+												<div class="control-group" id="fields">
+													<div class="controls">
+														<form role="form" autocomplete="off">
+															<div class="entry input-group col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 col-xs-12">
+																<a class="input-group-links" target="_blank" href="{{answer.text}}" >Map:    {{answer.text}}</a>
+																<span class="input-group-btn">
+																	<button class="btn btn-success js-edit-answer" data-url="{% url 'update_answer' pk=answer.pk %}" type="button">
+																		<span class="glyphicon glyphicon-cog"></span>
+																	</button>
+																	<button class="btn btn-danger js-delete-answer" data-url="{% url 'delete_answer' pk=answer.pk %}" type="button">
+																		<span class="glyphicon glyphicon-minus"></span>
+																	</button>
+																</span>
+															</div>
+														</form>
+													</div>
+												</div>
+												{% endif %}
+
+											{% endfor %}
+
+
+										</span>
+										<button style="float: right; height: 38px; margin-top: 14px;" class="btn btn-success js-new-answer" group-id="{{group.pk}}" type="button">
+											<span class="glyphicon glyphicon-plus"></span>
+										</button>
+									</div>
+								</div>
+							</div>
+							{% endfor %}
+						</div>
+					</div>
+				</div>
+			</header>
+			<div class="hidden">
+				<div class="control-group" id="fields">
+					<div class="controls">
+						<form role="form" autocomplete="off">
+							<div class="entry input-group col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 col-xs-12">
+								<input class="form-control" name="fields[]" type="text" placeholder="Good question :)" />
+								<span class="input-group-btn">
+									<button class="btn btn-success" type="button">
+										<span class="glyphicon glyphicon-cog"></span>
+									</button>
+									<button class="btn btn-danger" type="button">
+										<span class="glyphicon glyphicon-minus"></span>
+									</button>
+								</span>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+<div class="modal fade" id="modal-book">
+		<div class="modal-dialog">
+			<div class="modal-content">
+
+			</div>
+		</div>
+</div>
+<!-- {% load widget_tweaks%}
+<form method="post">
+	{% csrf_token %}
+	<div class="edit-answer">
+		<div class="edit-answer-top-panel">Topic</div>
+		<div class="edit-answer-content-text">
+			<div class="edit-answer-wrapper">
+				{% for field in form %}
+				<div class="form-group{% if field.errors %} has-error{% endif %}">
+					<label for="{{ field.id_for_label }}">{{ field.label }}</label>
+					{% render_field field class="form-control" %}
+					{% for error in field.errors %}
+						<p class="help-block">{{ error }}</p>
+        	{% endfor %}
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+		<div class="edit-answer-buttons">
+			<button class="btn btn-space btn-primary active">Save</button>
+			<div class="edit-answer-buttons-wrapper">
+				<button class="btn btn-space btn-primary active">Save</button>
+			</div>
+		</div>
+	</div>
+</form> -->
+	<!--[if lt IE 9]>
+	<script src="libs/html5shiv/es5-shim.min.js"></script>
+	<script src="libs/html5shiv/html5shiv.min.js"></script>
+	<script src="libs/html5shiv/html5shiv-printshiv.min.js"></script>
+	<script src="libs/respond/respond.min.js"></script>
+	<![endif]-->
+
+	<script src="{% static 'faq_app/js/libs.js'%}"></script>
+	<script src="{% static 'faq_app/js/common.js'%}"></script>
+	<script src="{% static 'faq_app/js/action.js' %}"></script>
+	<script>
+		$(document).ready(function() {
+			$("#topic-name").val('{{current_topic.pk}}');
+		});
+	</script>
+	<!-- Load CSS -->
+	<!--script>
+		function loadCSS(hf) {
+			var ms=document.createElement("link");ms.rel="stylesheet";
+			ms.href=hf;document.getElementsByTagName("head")[0].appendChild(ms);
+		}
+		loadCSS("{% static 'faq_app/css/header.min.css'%}"); //Header Styles (compress & paste to header after release)
+		loadCSS("{% static 'faq_app/css/main.min.css'%}");   //User Styles + Media Queries
+	</script-->
+	<script>
+		$("input[id^='tokenfield']").tokenfield();
+
+		{% for group in current_topic.groups.all %}
+			$.ajax({
+				url: '{% url 'group_questions' pk=group.pk %}',
+				type: 'get',
+
+				success: function (data) {
+					$("#tokenfield{{group.id}}").tokenfield('setTokens', data);
+				}
+			});
+		{% endfor %}
+
+	</script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,41 @@
+{% load widget_tweaks %}
+{% load static %}
+<form method="post" action="{% url 'update_answer' pk=pk %}" class ="js-answer-update-form">
+	{% csrf_token %}
+	<div class="edit-answer">
+		<div class="edit-answer-top-panel">Edit the answer</div>
+		<div class="edit-answer-mnu">
+			<ul>
+				<li id="text">text</li> |
+				<li id="video">video</li> |
+				<li id="picture">picture</li> |
+				<li id="maps">maps</li>
+			</ul>
+		</div>
+		<div class="edit-answer-content-text">
+			<div class="edit-answer-wrapper">
+				<label for="{{form.text.id_for_label}}" class="vasya">Text *</label>
+				{% render_field form.text class="form-control text-input" placeholder="..." %}
+				{% for error in form.text.errors %}
+					<p class="help-block">{{ error }}</p>
+				{% endfor %}
+
+				{% render_field form.kind class="answer-hidden-kind" %}
+
+				<div class = "image-name-wrapper" style="display:none">
+					<br>
+					<label for="{{form.image_name.id_for_label}}" class="image-name" >Image name:</label>
+					{% render_field form.image_name class="answer-hidden-image-name" %}
+				</div>
+
+			</div>
+		</div>
+		<div class="edit-answer-buttons">
+			<button class="btn btn-space btn-default" data-dismiss="modal">Close</button>
+			<div class="edit-answer-buttons-wrapper">
+				<button class="btn btn-space btn-primary active">Save</button>
+			</div>
+		</div>
+	</div>
+	<script src="{% static 'faq_app/js/common.js'%}"></script>
+</form>

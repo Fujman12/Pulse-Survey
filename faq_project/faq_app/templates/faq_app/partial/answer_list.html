@@ -1,0 +1,76 @@
+{% for answer in answers %}
+  {% if answer.kind == '0' %}
+  <div class="control-group" id="fields">
+    <div class="controls">
+      <form role="form" autocomplete="off">
+        <div class="entry input-group col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 col-xs-12">
+          <input class="form-control" name="fields[]" value="{{answer.text}}" type="text" disabled >
+          <span class="input-group-btn">
+            <button class="btn btn-success js-edit-answer" data-url="{% url 'update_answer' pk=answer.pk %}" type="button">
+              <span class="glyphicon glyphicon-cog"></span>
+            </button>
+            <button class="btn btn-danger js-delete-answer" data-url="{% url 'delete_answer' pk=answer.pk %}" type="button">
+              <span class="glyphicon glyphicon-minus"></span>
+            </button>
+          </span>
+        </div>
+      </form>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if answer.kind == '1' %}
+  <div class="img-wrapper col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 col-xs-12" style="margin-top: 15px; margin-bottom: 15px; text-align: right">
+    <div class="img-wrapper" style=" display: inline-block; margin-right: 25px;"><img src="{{ answer.text }}" alt="" style="border-radius: 10px; max-width: 45px"></div>
+    <span class="input-group-btn" style="display: inline-block; float: right; margin-right: 47px;">
+      <button class="btn btn-success js-edit-answer" data-url="{% url 'update_answer' pk=answer.pk %}" style="height: 38px; width: 35px" type="button">
+        <span class="glyphicon glyphicon-cog"></span>
+      </button>
+      <button class="btn btn-danger js-delete-answer" data-url="{% url 'delete_answer' pk=answer.pk %}" style="height: 38px; width: 35px" type="button">
+        <span class="glyphicon glyphicon-minus"></span>
+      </button>
+    </span>
+  </div>
+
+  {% endif %}
+
+  {% if answer.kind == '2' %}
+  <div class="control-group" id="fields">
+    <div class="controls">
+      <form role="form" autocomplete="off">
+        <div class="entry input-group col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 col-xs-12">
+          <a class="input-group-links" target="_blank" href="{{answer.text}}" >Video:    {{answer.text}}</a>
+          <span class="input-group-btn">
+            <button class="btn btn-success js-edit-answer" data-url="{% url 'update_answer' pk=answer.pk %}" type="button">
+              <span class="glyphicon glyphicon-cog"></span>
+            </button>
+            <button class="btn btn-danger js-delete-answer" data-url="{% url 'delete_answer' pk=answer.pk %}" type="button">
+              <span class="glyphicon glyphicon-minus"></span>
+            </button>
+          </span>
+        </div>
+      </form>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if answer.kind == '3' %}
+  <div class="control-group" id="fields">
+    <div class="controls">
+      <form role="form" autocomplete="off">
+        <div class="entry input-group col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 col-xs-12">
+          <a class="input-group-links" target="_blank" href="{{answer.text}}" >Map:    {{answer.text}}</a>
+          <span class="input-group-btn">
+            <button class="btn btn-success js-edit-answer" data-url="{% url 'update_answer' pk=answer.pk %}" type="button">
+              <span class="glyphicon glyphicon-cog"></span>
+            </button>
+            <button class="btn btn-danger js-delete-answer" data-url="{% url 'delete_answer' pk=answer.pk %}" type="button">
+              <span class="glyphicon glyphicon-minus"></span>
+            </button>
+          </span>
+        </div>
+      </form>
+    </div>
+  </div>
+  {% endif %}
+{% endfor %}

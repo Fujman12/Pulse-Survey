@@ -1,0 +1,28 @@
+{% load widget_tweaks %}
+{% load static %}
+
+<form method="post" action="{% url 'create_topic' %}" class="js-book-create-form">
+	{% csrf_token %}
+	<div class="edit-answer">
+		<div class="edit-answer-top-panel">New Topic</div>
+		<div class="edit-answer-content-text">
+			<div class="edit-answer-wrapper">
+				{% for field in form %}
+				<div class="form-group{% if field.errors %} has-error{% endif %}">
+					<label for="{{ field.id_for_label }}">{{ field.label }}</label>
+					{% render_field field class="form-control" %}
+					{% for error in field.errors %}
+						<p class="help-block">{{ error }}</p>
+        	{% endfor %}
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+		<div class="edit-answer-buttons">
+			<button class="btn btn-space btn-default" data-dismiss="modal">Close</button>
+			<div class="edit-answer-buttons-wrapper">
+				<button class="btn btn-space btn-primary active">Save</button>
+			</div>
+		</div>
+	</div>
+</form>
