@@ -124,7 +124,7 @@ $(function () {
         type: 'post',
         data: {text:e.attrs.value},
         success: function (data) {
-          //alert("Fuck yeah!" + data.pk);
+          
           e.attrs.id = data.pk;
 
         }
@@ -289,7 +289,13 @@ $(function () {
         $('.fields' + group_id).html(data.html_answers_list);
       }
     })
-  })
+  });
+
+
+
+
+
+
 
 
 

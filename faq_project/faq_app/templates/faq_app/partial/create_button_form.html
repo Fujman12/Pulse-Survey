@@ -1,15 +1,15 @@
 {% load widget_tweaks %}
 {% load static %}
 
-<form method="post" action="{% url 'create_topic' %}" class="js-book-create-form">
+<form method="post" action="{% url 'create_button' pk=answer.pk %}" class="js-button-create-form">
 	{% csrf_token %}
 	<div class="edit-answer">
-		<div class="edit-answer-top-panel">New Survey</div>
+		<div class="edit-answer-top-panel">New Button</div>
 		<div class="edit-answer-content-text">
 			<div class="edit-answer-wrapper">
 				{% for field in form %}
 				<div class="form-group{% if field.errors %} has-error{% endif %}">
-					<label for="{{ field.id_for_label }}">Survey name</label>
+					<label for="{{ field.id_for_label }}">Button text</label>
 					{% render_field field class="form-control" %}
 					{% for error in field.errors %}
 						<p class="help-block">{{ error }}</p>
@@ -19,10 +19,12 @@
 			</div>
 		</div>
 		<div class="edit-answer-buttons">
-			<button class="btn btn-space btn-default" data-dismiss="modal">Close</button>
+			<button class="btn btn-space btn-default" data-toggle="modal" data-target="#modal-book" data-dismiss="modal">Close</button>
 			<div class="edit-answer-buttons-wrapper">
-				<button class="btn btn-space btn-primary active">Save</button>
+				<button class="btn btn-space btn-primary active lold" >Save</button>
 			</div>
 		</div>
 	</div>
+
+	<script src="{% static 'faq_app/js/common.js'%}"></script>
 </form>

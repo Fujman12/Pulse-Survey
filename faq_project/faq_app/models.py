@@ -33,7 +33,7 @@ class Group(models.Model):
     def is_active(self):
         return self.status == Group.ACTIVE
 
-
+#Remove this later
 class Question(models.Model):
     text = models.CharField("Question text", max_length = 150)
     group = models.ForeignKey(Group, verbose_name = "Group", related_name = 'questions')
@@ -49,6 +49,7 @@ class Answer(models.Model):
     IMG = 1
     VIDEO = 2
     MAP = 3
+    BUTTON = 4
 
     KIND_CHOICES = (
         (TEXT,  _('Text')),
@@ -68,3 +69,7 @@ class Answer(models.Model):
     def __str__(self):
         #a_str = "{} {}".format(str(self.group), str(self.text))
         return str(self.text)
+
+class Button(models.Model):
+    text = models.CharField("Button text", max_length = 150)
+    answer = models.ForeignKey(Answer, verbose_name = "Answer", related_name = 'buttons')

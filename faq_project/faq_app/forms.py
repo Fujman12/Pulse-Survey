@@ -1,5 +1,5 @@
 from django import forms
-from .models import Topic, Answer
+from .models import Topic, Answer, Button
 
 class TopicForm(forms.ModelForm):
     class Meta:
@@ -11,3 +11,8 @@ class AnswerForm(forms.ModelForm):
         model = Answer
         fields = ('text','kind','image_name')
         widgets = {'kind':forms.HiddenInput()}
+
+class ButtonForm(forms.ModelForm):
+    class Meta:
+        model = Button
+        fields = ('text',)

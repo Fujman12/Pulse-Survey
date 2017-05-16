@@ -3,8 +3,8 @@ from django.template.loader import render_to_string
 from django.http import JsonResponse
 from django.core.urlresolvers import reverse
 
-from .models import Topic, Group, Question, Answer
-from .forms import TopicForm, AnswerForm
+from .models import Topic, Group, Question, Answer, Button
+from .forms import TopicForm, AnswerForm, ButtonForm
 # Create your views here.
 def index(request):
 
@@ -167,7 +167,7 @@ def update_answer(request,pk):
     else:
         form = AnswerForm(instance=answer)
 
-    context = {'form':form, 'pk':pk}
+    context = {'form':form, 'pk':pk, 'answer':answer }
 
     data['html_form'] = render_to_string('faq_app/partial/update_answer_form.html',
         context,
@@ -213,5 +213,41 @@ def create_json(request, pk):
         answers_string = get_answer_string(group)
         for question in group.questions.all():
             data.update({question.text: answers_string})
+
+    return JsonResponse(data)
+
+def create_button(request, pk):
+    answer = get_object_or_404(Answer, pk=pk)
+
+    data = dict()
+
+    if request.method == "POST":
+        form = ButtonForm(request.POST)
+        if form.is_valid():
+            buttn = form.save(commit=False)
+            answer = get_object_or_404(Answer, pk=pk)
+            buttn.answer = answer
+            buttn.save()
+
+            #answers = group.answers.all()
+            #data['html_answers_list'] = render_to_string('faq_app/partial/answer_list.html', {
+            #    'answers': answers
+            #})
+
+            #data['group_id'] = group.pk
+
+            data['form_is_valid'] = True
+
+        else:
+            data['form_is_valid'] = False
+    else:
+        form = ButtonForm()
+
+    context = {'form': form, 'pk':pk, 'answer':answer }
+
+    data['html_form'] = render_to_string('faq_app/partial/create_button_form.html',
+        context,
+        request=request,
+    )
 
     return JsonResponse(data)

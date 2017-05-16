@@ -19,4 +19,6 @@ urlpatterns = [
     url(r'delete_answer/(?P<pk>[0-9]+)', views.delete_answer, name="delete_answer"),
 
     url(r'create_json/(?P<pk>[0-9]+)', views.create_json, name="create_json"),
+
+    url(r'create_button/(?P<pk>[0-9]+)', views.create_button, name="create_button"),
 ]
