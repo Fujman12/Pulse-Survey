@@ -1,0 +1,10 @@
+<br>
+{% if answer %}
+  {% for button in answer.buttons.all %}
+    <p>{{ button.text }}</p>
+  {% endfor %}
+{% else %}
+  {% for button in buttonList %}
+    <p>{{ button }}</p>
+  {% endfor %}
+{% endif %}

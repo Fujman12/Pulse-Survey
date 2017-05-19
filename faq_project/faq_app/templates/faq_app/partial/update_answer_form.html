@@ -7,7 +7,7 @@
 		<div class="edit-answer-mnu">
 			<ul>
 				<li id="text">open question</li> |
-				<li id="button">button question</li>|
+				<li id="button">button question</li> |
 				<li id="video">video</li> |
 				<li id="picture">picture</li> |
 				<li id="maps">maps</li>
@@ -35,10 +35,12 @@
 				<button style="float: right; height: 38px; margin-top: 14px;" data-toggle="modal" data-target="#modal-button" data-dismiss="modal" class="btn btn-success js-new-button" answer-id="{{answer.pk}}" type="button">
 					<span class="glyphicon glyphicon-plus"></span>
 				</button>
-				Buttons shown here:<br>
-				{% for button in answer.buttons.all %}
-					{{ button.text }}
-				{% endfor %}
+				<div class="buttons-list-wrapper">
+					<br>
+					{% for button in answer.buttons.all %}
+						<p>{{ button.text }}</p>
+					{% endfor %}
+				</div>
 			</div>
 		</div>
 		<div class="edit-answer-buttons">

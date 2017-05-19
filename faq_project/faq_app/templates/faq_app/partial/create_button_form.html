@@ -1,7 +1,7 @@
 {% load widget_tweaks %}
 {% load static %}
 
-<form method="post" action="{% url 'create_button' pk=answer.pk %}" class="js-button-create-form">
+<form method="post" action="{% if answer  %}{% url 'create_button_pk' pk=answer.pk %} {% else %} {% url 'create_button' %} {% endif %}" class="js-button-create-form">
 	{% csrf_token %}
 	<div class="edit-answer">
 		<div class="edit-answer-top-panel">New Button</div>
@@ -21,7 +21,7 @@
 		<div class="edit-answer-buttons">
 			<button class="btn btn-space btn-default" data-toggle="modal" data-target="#modal-book" data-dismiss="modal">Close</button>
 			<div class="edit-answer-buttons-wrapper">
-				<button class="btn btn-space btn-primary active lold" >Save</button>
+				<button class="btn btn-space btn-primary active btn-save" >Save</button>
 			</div>
 		</div>
 	</div>

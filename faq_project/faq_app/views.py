@@ -5,12 +5,17 @@ from django.core.urlresolvers import reverse
 
 from .models import Topic, Group, Question, Answer, Button
 from .forms import TopicForm, AnswerForm, ButtonForm
+
+from datetime import datetime
 # Create your views here.
 def index(request):
 
     return redirect('topic', pk=1)
 
 def topic(request,pk):
+    #print(request.session["buttons"])
+    del buttonList[:]
+
     topic = Topic.objects.filter(pk = pk).first()
     if topic == None:
         topic = Topic(name = "Initial")
@@ -121,6 +126,15 @@ def create_answer(request,pk):
             answ.group = group
             answ.save()
 
+            if answ.kind == '4':
+                for buttonText in request.session["buttons"]:
+                    btn = Button(text = buttonText,answer = answ)
+                    btn.save()
+
+            del buttonList[:]
+            request.session["buttons"] = None
+
+
             answers = group.answers.all()
             data['html_answers_list'] = render_to_string('faq_app/partial/answer_list.html', {
                 'answers': answers
@@ -216,7 +230,8 @@ def create_json(request, pk):
 
     return JsonResponse(data)
 
-def create_button(request, pk):
+# When the answer already exists
+def create_button_pk(request, pk):
     answer = get_object_or_404(Answer, pk=pk)
 
     data = dict()
@@ -229,10 +244,9 @@ def create_button(request, pk):
             buttn.answer = answer
             buttn.save()
 
-            #answers = group.answers.all()
-            #data['html_answers_list'] = render_to_string('faq_app/partial/answer_list.html', {
-            #    'answers': answers
-            #})
+            data["html_buttons_list"] = render_to_string('faq_app/partial/buttons_list.html',
+            {'answer':answer}
+            )
 
             #data['group_id'] = group.pk
 
@@ -249,5 +263,58 @@ def create_button(request, pk):
         context,
         request=request,
     )
+
+    return JsonResponse(data)
+
+
+# Store buttons in session untill answer is created
+buttonList = []
+
+def create_button(request):
+    data = dict()
+    if request.method == "POST":
+        form = ButtonForm(request.POST)
+
+        if form.is_valid():
+            buttonList.append(form.cleaned_data['text'])
+            request.session["buttons"] = buttonList
+
+            data["html_buttons_list"] = render_to_string('faq_app/partial/buttons_list.html',
+            {'buttonList':buttonList}
+            )
+
+            data['form_is_valid'] = True
+
+        else:
+            data['form_is_valid'] = False
+    else:
+        form = ButtonForm()
+
+        context = {'form': form}
+
+        data['html_form'] = render_to_string('faq_app/partial/create_button_form.html',
+            context,
+            request=request,
+        )
+
+    return JsonResponse(data)
+
+def topic_datetime(request, pk):
+    topic = get_object_or_404(Topic, pk=pk)
+
+    data = dict()
+
+    if request.method == "POST":
+        raw_dt = request.POST.get('datetime','')
+        dt = datetime.strptime(raw_dt,'%Y-%m-%d - %H:%M')
+        print(dt)
+
+        topic.datetime = dt
+        topic.save()
+
+    else:
+
+        str_dt = topic.datetime.strftime('%Y-%m-%d - %H:%M')
+        data['str_datetime'] = str_dt
 
     return JsonResponse(data)

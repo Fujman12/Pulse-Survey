@@ -20,5 +20,8 @@ urlpatterns = [
 
     url(r'create_json/(?P<pk>[0-9]+)', views.create_json, name="create_json"),
 
-    url(r'create_button/(?P<pk>[0-9]+)', views.create_button, name="create_button"),
+    url(r'create_button/(?P<pk>[0-9]+)', views.create_button_pk, name="create_button_pk"),
+    url(r'create_button/', views.create_button, name="create_button"),
+
+    url(r'topic_datetime/(?P<pk>[0-9]+)', views.topic_datetime, name="topic_datetime"),
 ]

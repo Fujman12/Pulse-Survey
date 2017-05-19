@@ -18,20 +18,20 @@ $(function() {
 			}
 
 			if ($('.answer-hidden-kind').val() != '4') {
-
+				$('#extra').show();
 				$("div.buttons-wrapper").hide();
 
 			} else{
-
+				$('#extra').hide();
 				$("div.buttons-wrapper").show();
 
 			}
 
+		};
 
-		}
 
 
-		$('.edit-answer-mnu #text').addClass("active")
+		//$('.edit-answer-mnu #text').addClass("active");
 		$('.edit-answer-mnu #video').click(function() {
 
 			$('body .edit-answer .edit-answer-mnu ul li').addClass("inactive").removeClass("active");
@@ -100,10 +100,13 @@ $(function() {
 	    });
 		});
 
-		$(".js-button-create-form").submit(function () {
 
+		$(".js-button-create-form").submit(function (event) {
+
+
+	  event.stopImmediatePropagation();
 		var form = $(this);
-		alert("sent");
+
 		$.ajax({
 			url: form.attr("action"),
 			data: form.serialize(),
@@ -115,6 +118,7 @@ $(function() {
 					$("#modal-button").modal("hide");
 					$("#modal-book").modal("show");
 
+					$(".buttons-list-wrapper").html(data.html_buttons_list)
 					//var group_id = data.group_id;
 
 					//$('.fields' + group_id).html(data.html_answers_list);
@@ -130,19 +134,39 @@ $(function() {
 		//$("#modal-button").modal("hide");
 		return false;
 		});
-	
-		// $('form>.input-group').click(function(e) {
-		// 	$(this).addClass('field-remove');
-		// });
+		//window.extra = false;
+		$('.js-extra-part').click(function(e){
+			//alert("sdf");
+			//e.preventDefault();
+			//window.extra = true;
 
-		// $('.input-group-btn .btn-danger').click(function(e) {
-		// 	$(".field-remove").remove();
-		// });
+			$('.js-answer-create-form').submit();
+			setTimeout(function(){
+				$('.js-new-answer[group-id="' + window.group + '"]').trigger('click');
+			}, 400);
 
-		//$('.lol').tokenfield();
-		//$('.lol').tokenfield();
-		//$('.lol').tokenfield('createToken', { value: 'violet', label: 'Violet' });
-		//$("#tokenfield63").tokenfield('createToken', { value: 'violellllll', label: 'Violet' });
+			return false;
+			/*
+			$.ajax({
+	      url: '/faq/create_answer/71',
+	      type: 'get',
+	      dataType: 'json',
+	      beforeSend: function () {
+					alert("sdf");
+	        $("#modal-book").modal("show");
+	      },
+	      success: function (data) {
+	        $("#modal-book .modal-content").html(data.html_form);
+	      }
+	    });
+			*/
+			 //$("#modal-book").modal("hide");
+
+       //$('.js-new-answer[group-id="71"]').trigger('click');
+
+			 //$("#modal-book").modal("show");
+
+		});
 
 
 	//Chrome Smooth Scroll

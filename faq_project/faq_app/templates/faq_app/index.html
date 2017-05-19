@@ -22,6 +22,8 @@
 	</noscript>
 	<link rel="stylesheet" href="{% static 'faq_app/css/header.min.css'%}">
 	<link rel="stylesheet" href="{% static 'faq_app/css/main.min.css'%}">
+	<link rel="stylesheet" type="text/css" href="{% static 'faq_app/css/perfect-scrollbar.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'faq_app/css/bootstrap-datetimepicker.min.css' %}">
 
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -29,7 +31,10 @@
 	<link rel="apple-touch-icon" href="{% static 'faq_app/img/favicon/apple-touch-icon.png'%}">
 	<link rel="apple-touch-icon" sizes="72x72" href="{% static 'faq_app/img/favicon/apple-touch-icon-72x72.png'%}">
 	<link rel="apple-touch-icon" sizes="114x114" href="{% static 'faq_app/img/favicon/apple-touch-icon-114x114.png'%}">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<!--script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script-->
+
+
+
 </head>
 
 <body>
@@ -77,7 +82,17 @@
 									</select>
 								</div>
 								<div class="buttons">
-									<button class="btn btn-space btn-primary hover" onclick="window.open('{% url 'create_json' pk=current_topic.pk %}')" >Save All / Train</button>
+									<div class="panel-body panel-body-dt">
+									<form action="#" style="border-radius: 0px;" class="form-horizontal group-border-dashed">
+										<div class="form-group">
+											<!-- <div class="col-md-3 col-xs-7"> -->
+		                        <div data-start-view="0" data-date="2017-05-16T05:25:07Z" data-date-format="yyyy-mm-dd - HH:ii" data-link-field="dtp_input1" class="input-group date datetimepicker" data-topic="{{current_topic.pk}}" id="js-dp">
+		                          <input size="16" type="text" value="" class="form-control js-dp"><span class="input-group-addon btn btn-primary"><i class="icon-th mdi mdi-calendar"></i></span>
+		                        </div>
+		                  <!-- </div> -->
+										</div>
+									</form>
+									</div>
 									<button class="btn btn-space btn-primary js-new-topic">New survey <span class="glyphicon glyphicon-plus-sign"></span></button>
 									<button class="btn btn-space btn-primary js-new-group" data-url="{% url 'create_group' pk=current_topic.pk %}">New Question <span class="glyphicon glyphicon-plus-sign"></span></button>
 								</div>
@@ -176,6 +191,30 @@
 												</div>
 												{% endif %}
 
+												{% if answer.kind == '4' %}
+												<div class="control-group" id="fields">
+													<div class="controls">
+														<form role="form" autocomplete="off">
+															<div class="entry input-group col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 col-xs-12">
+																<a class="input-group-links input-group-links-kind-4" target="_blank" href="#" readonly >{{answer.text}} <br>
+																	{% for button in answer.buttons.all %}
+																	<p>{{ button.text }}</p>
+																	{% endfor %}
+																</a>
+																<span class="input-group-btn">
+																	<button class="btn btn-success js-edit-answer" data-url="{% url 'update_answer' pk=answer.pk %}" type="button">
+																		<span class="glyphicon glyphicon-cog"></span>
+																	</button>
+																	<button class="btn btn-danger js-delete-answer" data-url="{% url 'delete_answer' pk=answer.pk %}" type="button">
+																		<span class="glyphicon glyphicon-minus"></span>
+																	</button>
+																</span>
+															</div>
+														</form>
+													</div>
+												</div>
+												{% endif %}
+
 											{% endfor %}
 
 
@@ -257,14 +296,94 @@
 	<script src="libs/html5shiv/html5shiv-printshiv.min.js"></script>
 	<script src="libs/respond/respond.min.js"></script>
 	<![endif]-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
 
 	<script src="{% static 'faq_app/js/libs.js'%}"></script>
-	<script src="{% static 'faq_app/js/common.js'%}"></script>
+		<script src="{% static 'faq_app/js/main.js' %}"> </script>
+	<!--script src="{% static 'faq_app/js/common.js'%}"></script-->
 	<script src="{% static 'faq_app/js/action.js' %}"></script>
+
+	<script src="{% static 'faq_app/js/perfect-scrollbar.jquery.min.js' %}"> </script>
+
+	<!--script src="{% static 'faq_app/js/bootstrap.min.js'%}" type="text/javascript"></script-->
+
+	<script src="{% static 'faq_app/js/bootstrap-datetimepicker.js'%}" type="text/javascript"></script>
+	<script src="{% static 'faq_app/js/app-form-elements.js'%}" type="text/javascript"></script>
+
+	<!--script src="{% static 'faq_app/js/app.js' %}"> </script-->
+	<script type="text/javascript">
+      $(document).ready(function(){
+      	//initialize the javascript
+      	App.init();
+      	App.formElements();
+      });
+  </script>
+
+
+
 	<script>
+		//$('.js-dp').val('1/11/2016 12:23:12');
 		$(document).ready(function() {
+
 			$("#topic-name").val('{{current_topic.pk}}');
+
 		});
+	</script>
+	<script>
+		//$('.js-dp').datetimepicker();
+		$.ajax({
+	    url:'faq/topic_datetime/' + $('#js-dp').attr("data-topic"),
+	    type:'get',
+	    success: function(data){
+
+	      $('.js-dp').val(data.str_datetime);
+	    }
+	  });
+
+		function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    };
+
+
+    var csrftoken = getCookie('csrftoken');
+		$('#js-dp').on('change', function(e){
+			console.log(e.target.value);
+			var postdata = {
+				'datetime' : e.target.value,
+				'csrfmiddlewaretoken': csrftoken
+			};
+			$.post('faq/topic_datetime/' + $(this).attr("data-topic") , postdata);
+		});
+
+
+		/*
+    $("button")
+        .button()
+        .click(function (event) {
+            var postdata = {
+                'value1': 7,
+                'value2': 5,
+                'csrfmiddlewaretoken': csrftoken
+            };
+            $.post('', postdata); // POST request to the same view I am now
+            window.alert("Hello world!"); // To know it is working
+        });
+		*/
+
+
 	</script>
 	<!-- Load CSS -->
 	<!--script>
@@ -290,6 +409,7 @@
 		{% endfor %}
 
 	</script>
+
 
 
 

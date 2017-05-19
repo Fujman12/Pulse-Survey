@@ -6,7 +6,8 @@
 		<div class="edit-answer-top-panel">Edit the question</div>
 		<div class="edit-answer-mnu">
 			<ul>
-				<li id="text">text</li> |
+				<li id="text">open question</li> |
+				<li id="button">button question</li> |
 				<li id="video">video</li> |
 				<li id="picture">picture</li> |
 				<li id="maps">maps</li>
@@ -28,12 +29,24 @@
 					{% render_field form.image_name class="answer-hidden-image-name" %}
 				</div>
 
+			</div>
 
+			<div class="buttons-wrapper" style="display:none">
+				<button style="float: right; height: 38px; margin-top: 14px;" data-toggle="modal" data-target="#modal-button" data-dismiss="modal" class="btn btn-success js-new-button" answer-id="{{answer.pk}}" type="button">
+					<span class="glyphicon glyphicon-plus"></span>
+				</button>
+				<div class="buttons-list-wrapper">
+					<h4>Button options:</h4><br>
+					{% for button in answer.buttons.all %}
+						{{ button.text }}
+					{% endfor %}
+				</div>
 			</div>
 		</div>
 		<div class="edit-answer-buttons">
-			<button class="btn btn-space btn-default" data-dismiss="modal">Close</button>
+			<button class="btn btn-space btn-default"  data-dismiss="modal">Close</button>
 			<div class="edit-answer-buttons-wrapper">
+				<button class="btn btn-space btn-primary active js-extra-part" id="extra" >Extra part</button>
 				<button class="btn btn-space btn-primary active">Save</button>
 			</div>
 		</div>

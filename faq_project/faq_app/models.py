@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
@@ -9,7 +9,7 @@ from .managers import GroupManager
 
 class Topic(models.Model):
     name = models.CharField("Topic name", max_length = 150)
-
+    datetime = models.DateTimeField('Survey\'s datetime', default = datetime.now())
     def __str__(self):
         return self.name
 

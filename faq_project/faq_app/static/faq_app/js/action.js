@@ -48,7 +48,7 @@ $(function () {
     dataType: 'json',
     success: function (data) {
       if (data.form_is_valid) {
-        alert("New Topic created!");  // <-- This is just a placeholder for now for testing
+        alert("New survey created!");  // <-- This is just a placeholder for now for testing
         $("#modal-book").modal("hide");
         $(".select-topic").html(data.html_topics_list)
       }
@@ -79,7 +79,7 @@ $(function () {
       type: 'get',
 
       success: function (data) {
-        alert("Q/A group has been removed")
+        alert("Question has been removed")
         location.reload();
       }
     });
@@ -93,7 +93,7 @@ $(function () {
         type: 'get',
 
         success: function (data) {
-          alert("Question group activated!");
+          alert("Question activated!");
         }
       });
     } else {
@@ -102,7 +102,7 @@ $(function () {
         type: 'get',
 
         success: function (data) {
-          alert("Question group deactivated!");
+          alert("Question deactivated!");
         }
       });
     }
@@ -124,7 +124,7 @@ $(function () {
         type: 'post',
         data: {text:e.attrs.value},
         success: function (data) {
-          
+
           e.attrs.id = data.pk;
 
         }
@@ -135,6 +135,8 @@ $(function () {
     if (new_header != null) {
       $('a[href$="#collapse-'+ group_id + '"]').html(i + new_header);
     }
+    $(this).parent().hide();
+    //alert("fd");
   })
 
   .on('tokenfield:editedtoken', function (e) {
@@ -183,11 +185,14 @@ $(function () {
       },
       success: function (data) {
         $("#modal-book .modal-content").html(data.html_form);
+        setTimeout(function(){
+          $('.edit-answer-mnu #text').trigger("click");
+        }, 200);
       }
     });
   });
 
-  $("#modal-book").on("submit", ".js-answer-create-form", function () {
+  $("#modal-book").on("submit", ".js-answer-create-form", function (e) {
   var form = $(this);
   $.ajax({
     url: form.attr("action"),
@@ -202,10 +207,14 @@ $(function () {
         var group_id = data.group_id;
 
         $('.fields' + group_id).html(data.html_answers_list);
+
+        window.group = group_id
       }
+
       else {
         $("#modal-book .modal-content").html(data.html_form);
       }
+
     }
   });
   return false;
@@ -228,20 +237,39 @@ $(function () {
 
     			switch (tab_value) {
     				case '0':
-    					$('.edit-answer-mnu #text').trigger("click");
+              setTimeout(function(){
+                $('.edit-answer-mnu #text').trigger("click");
+              }, 200);
+
     					break;
 
     				case '1':
-    					$('.edit-answer-mnu #picture').trigger("click");
+
+              setTimeout(function(){
+        				$('.edit-answer-mnu #picture').trigger("click");
+        			}, 200);
+
     					break;
 
     				case '2':
-    					$('.edit-answer-mnu #video').trigger("click");
+              setTimeout(function(){
+                $('.edit-answer-mnu #video').trigger("click");
+              }, 200);
+
     					break;
 
     				case '3':
-    					$('.edit-answer-mnu #maps').trigger("click");
+              setTimeout(function(){
+                $('.edit-answer-mnu #maps').trigger("click");
+              }, 200);
+
     					break;
+
+            case '4':
+              setTimeout(function(){
+                $('.edit-answer-mnu #button').trigger("click");
+              }, 200);
+              break;
 
     				default:
     					break;
@@ -300,9 +328,15 @@ $(function () {
 
 
 
+
+
+
+
+
 });
 
 $( document ).ready(function() {
+
 
 
 });
