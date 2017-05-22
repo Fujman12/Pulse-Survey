@@ -74,27 +74,27 @@
   </div>
   {% endif %}
 
-  {% if answer.kind == '4' %}
-  <div class="control-group" id="fields">
-    <div class="controls">
-      <form role="form" autocomplete="off">
-        <div class="entry input-group col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 col-xs-12">
-          <a class="input-group-links input-group-links-kind-4" target="_blank" href="#" readonly >{{answer.text}} <br>
-            {% for button in answer.buttons.all %}
-            <p>{{ button.text }}</p>
-            {% endfor %}
-          </a>
-          <span class="input-group-btn">
-            <button class="btn btn-success js-edit-answer" data-url="{% url 'update_answer' pk=answer.pk %}" type="button">
-              <span class="glyphicon glyphicon-cog"></span>
-            </button>
-            <button class="btn btn-danger js-delete-answer" data-url="{% url 'delete_answer' pk=answer.pk %}" type="button">
-              <span class="glyphicon glyphicon-minus"></span>
-            </button>
-          </span>
-        </div>
-      </form>
-    </div>
-  </div>
-  {% endif %}
 {% endfor %}
+{% if group.has_button %}
+<div class="control-group" id="fields">
+        <div class="controls">
+            <form role="form" autocomplete="off">
+                <div class="entry input-group col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 col-xs-12">
+                    <a class="input-group-links input-group-links-kind-4" target="_blank" href="#" readonly >{{group.btn.text}} <br>
+                        {% for button in group.btn.buttons.all %}
+                        <p>{{ button.text }}</p>
+                        {% endfor %}
+                    </a>
+                    <span class="input-group-btn">
+                        <button class="btn btn-success js-edit-answer" data-url="{% url 'update_answer' pk=group.btn.pk %}" type="button">
+                            <span class="glyphicon glyphicon-cog"></span>
+                        </button>
+                        <button class="btn btn-danger js-delete-answer" data-url="{% url 'delete_answer' pk=group.btn.pk %}" type="button">
+                            <span class="glyphicon glyphicon-minus"></span>
+                        </button>
+                    </span>
+                </div>
+            </form>
+        </div>
+</div>
+{% endif %}

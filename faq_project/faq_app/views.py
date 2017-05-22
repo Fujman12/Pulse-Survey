@@ -37,13 +37,14 @@ def create_topic(request):
     if request.method == "POST":
         form = TopicForm(request.POST)
         if form.is_valid():
-            form.save()
+            topic = form.save()
             data['form_is_valid'] = True
 
             topics = Topic.objects.all()
             data['html_topics_list'] = render_to_string('faq_app/partial/topics_list_options.html', {
                 'topics': topics
             })
+            data['topic_pk'] = topic.pk
         else:
             data['form_is_valid'] = False
     else:
@@ -117,12 +118,13 @@ def delete_question(request, pk):
 
 def create_answer(request,pk):
     data = dict()
+    group = get_object_or_404(Group, pk=pk)
 
     if request.method == "POST":
         form = AnswerForm(request.POST)
         if form.is_valid():
             answ = form.save(commit=False)
-            group = get_object_or_404(Group, pk=pk)
+
             answ.group = group
             answ.save()
 
@@ -137,7 +139,7 @@ def create_answer(request,pk):
 
             answers = group.answers.all()
             data['html_answers_list'] = render_to_string('faq_app/partial/answer_list.html', {
-                'answers': answers
+                'answers': answers, 'group' : group,
             })
 
             data['group_id'] = group.pk
@@ -149,7 +151,7 @@ def create_answer(request,pk):
     else:
         form = AnswerForm()
 
-    context = {'form': form, 'pk':pk }
+    context = {'form': form, 'pk':pk, 'group': group }
 
     data['html_form'] = render_to_string('faq_app/partial/create_answer_form.html',
         context,
@@ -160,7 +162,7 @@ def create_answer(request,pk):
 
 def update_answer(request,pk):
     answer = get_object_or_404(Answer, pk=pk)
-
+    group = answer.group
     data = dict()
 
     if request.method =="POST":
@@ -171,7 +173,7 @@ def update_answer(request,pk):
 
             answers = answer.group.answers.all()
             data['html_answers_list'] = render_to_string('faq_app/partial/answer_list.html', {
-                'answers': answers
+                'answers': answers, 'group' : group
             })
 
             data['group_id'] = answer.group.pk
@@ -192,13 +194,14 @@ def update_answer(request,pk):
 
 def delete_answer(request, pk):
     answer = get_object_or_404(Answer, pk=pk)
+    group = answer.group
     answer.delete()
 
     data = dict()
 
     answers = answer.group.answers.all()
     data['html_answers_list'] = render_to_string('faq_app/partial/answer_list.html', {
-        'answers': answers
+        'answers': answers, 'group' : group,
     })
     data['group_id'] = answer.group.pk
 

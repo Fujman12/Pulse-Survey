@@ -27,6 +27,19 @@ class Group(models.Model):
 
     objects = GroupManager()
 
+    def has_button(self):
+        has_button = False
+        for answer in self.answers.all():
+            if answer.kind == str(Answer.BUTTON):
+                has_button = True
+
+        return has_button
+
+    def btn(self):
+        btn = self.answers.filter(kind='4').first()
+
+        return btn
+
     def __str__(self):
         return self.name
 

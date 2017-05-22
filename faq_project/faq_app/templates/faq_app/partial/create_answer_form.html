@@ -7,7 +7,7 @@
 		<div class="edit-answer-mnu">
 			<ul>
 				<li id="text">open question</li> |
-				<li id="button">button question</li> |
+				{% if not group.has_button %}<li id="button">button question</li> |{% endif %}
 				<li id="video">video</li> |
 				<li id="picture">picture</li> |
 				<li id="maps">maps</li>

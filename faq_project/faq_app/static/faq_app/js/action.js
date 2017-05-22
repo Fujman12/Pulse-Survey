@@ -50,7 +50,8 @@ $(function () {
       if (data.form_is_valid) {
         alert("New survey created!");  // <-- This is just a placeholder for now for testing
         $("#modal-book").modal("hide");
-        $(".select-topic").html(data.html_topics_list)
+        window.location.href = '/faq/' + data.topic_pk
+
       }
       else {
         $("#modal-book .modal-content").html(data.html_form);
