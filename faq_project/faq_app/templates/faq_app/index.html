@@ -406,6 +406,7 @@
 
 				success: function (data) {
 					$("#tokenfield{{group.id}}").tokenfield('setTokens', data);
+					$("#tokenfield{{group.id}}").parent().hide();
 				}
 			});
 		{% endfor %}
