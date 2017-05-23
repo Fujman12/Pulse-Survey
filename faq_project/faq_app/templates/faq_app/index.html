@@ -113,7 +113,9 @@
 								</div>
 								<div id="collapse-{{group.pk}}" class="panel-collapse collapse">
 									<div class="panel-body">
-										<input type="text" class="form-control tkn" data-delimiter="/"  id="tokenfield{{group.pk}}" group-id="{{group.pk}}" placeholder="Type something"/>
+										<input style="max-width: 400px" type="text" class="form-control tkn input" data-delimiter="/"   group-id="{{group.pk}}" placeholder="Type question name"/>
+										<br>
+										<br>
 										<span class="fields{{group.pk}}">
 											{% for answer in group.answers.all %}
 												{% if answer.kind == '0' %}
@@ -406,7 +408,7 @@
 
 				success: function (data) {
 					$("#tokenfield{{group.id}}").tokenfield('setTokens', data);
-					$("#tokenfield{{group.id}}").parent().hide();
+					$("#tokenfield{{group.id}}").parent().hide()
 				}
 			});
 		{% endfor %}

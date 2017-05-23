@@ -7,18 +7,20 @@ from .models import Topic, Group, Question, Answer, Button
 from .forms import TopicForm, AnswerForm, ButtonForm
 
 from datetime import datetime
+
+
 # Create your views here.
 def index(request):
-
     return redirect('topic', pk=1)
 
-def topic(request,pk):
-    #print(request.session["buttons"])
+
+def topic(request, pk):
+    # print(request.session["buttons"])
     del buttonList[:]
 
-    topic = Topic.objects.filter(pk = pk).first()
+    topic = Topic.objects.filter(pk=pk).first()
     if topic == None:
-        topic = Topic(name = "Initial")
+        topic = Topic(name="Initial")
 
     topics = Topic.objects.all()
     groups = topic.groups.all()
@@ -52,24 +54,27 @@ def create_topic(request):
 
     context = {'form': form}
     data['html_form'] = render_to_string('faq_app/partial/create_topic_form.html',
-        context,
-        request=request,
-    )
+                                         context,
+                                         request=request,
+                                         )
     return JsonResponse(data)
+
 
 def create_group(request, pk):
     topic = Topic.objects.filter(pk=pk).first()
 
-    group = Group(topic = topic)
+    group = Group(topic=topic)
     group.save()
 
     return redirect('topic', pk=pk)
+
 
 def delete_group(request, pk):
     group = get_object_or_404(Group, pk=pk)
     group.delete()
 
     return redirect('topic', pk=group.topic.pk)
+
 
 def update_group(request, pk, action):
     group = get_object_or_404(Group, pk=pk)
@@ -85,6 +90,7 @@ def update_group(request, pk, action):
 
     return redirect('topic', pk=group.topic.pk)
 
+
 def group_questions(request, pk):
     group = get_object_or_404(Group, pk=pk)
 
@@ -99,9 +105,10 @@ def group_questions(request, pk):
 
     return JsonResponse(questions_list, safe=False)
 
+
 def create_question(request, pk):
     group = get_object_or_404(Group, pk=pk)
-    q = Question(group=group, text = request.POST["text"])
+    q = Question(group=group, text=request.POST["text"])
     q.save()
 
     data = dict()
@@ -109,14 +116,16 @@ def create_question(request, pk):
 
     return JsonResponse(data)
 
+
 def delete_question(request, pk):
     q = get_object_or_404(Question, pk=pk)
 
     q.delete()
 
-    return JsonResponse({'none':'none'})
+    return JsonResponse({'none': 'none'})
 
-def create_answer(request,pk):
+
+def create_answer(request, pk):
     data = dict()
     group = get_object_or_404(Group, pk=pk)
 
@@ -130,16 +139,15 @@ def create_answer(request,pk):
 
             if answ.kind == '4':
                 for buttonText in request.session["buttons"]:
-                    btn = Button(text = buttonText,answer = answ)
+                    btn = Button(text=buttonText, answer=answ)
                     btn.save()
 
             del buttonList[:]
             request.session["buttons"] = None
 
-
             answers = group.answers.all()
             data['html_answers_list'] = render_to_string('faq_app/partial/answer_list.html', {
-                'answers': answers, 'group' : group,
+                'answers': answers, 'group': group,
             })
 
             data['group_id'] = group.pk
@@ -151,21 +159,22 @@ def create_answer(request,pk):
     else:
         form = AnswerForm()
 
-    context = {'form': form, 'pk':pk, 'group': group }
+    context = {'form': form, 'pk': pk, 'group': group}
 
     data['html_form'] = render_to_string('faq_app/partial/create_answer_form.html',
-        context,
-        request=request,
-    )
+                                         context,
+                                         request=request,
+                                         )
 
     return JsonResponse(data)
 
-def update_answer(request,pk):
+
+def update_answer(request, pk):
     answer = get_object_or_404(Answer, pk=pk)
     group = answer.group
     data = dict()
 
-    if request.method =="POST":
+    if request.method == "POST":
         form = AnswerForm(request.POST, instance=answer)
         if form.is_valid():
             form.save()
@@ -173,7 +182,7 @@ def update_answer(request,pk):
 
             answers = answer.group.answers.all()
             data['html_answers_list'] = render_to_string('faq_app/partial/answer_list.html', {
-                'answers': answers, 'group' : group
+                'answers': answers, 'group': group
             })
 
             data['group_id'] = answer.group.pk
@@ -183,14 +192,15 @@ def update_answer(request,pk):
     else:
         form = AnswerForm(instance=answer)
 
-    context = {'form':form, 'pk':pk, 'answer':answer }
+    context = {'form': form, 'pk': pk, 'answer': answer}
 
     data['html_form'] = render_to_string('faq_app/partial/update_answer_form.html',
-        context,
-        request=request,
-    )
+                                         context,
+                                         request=request,
+                                         )
 
     return JsonResponse(data)
+
 
 def delete_answer(request, pk):
     answer = get_object_or_404(Answer, pk=pk)
@@ -201,11 +211,12 @@ def delete_answer(request, pk):
 
     answers = answer.group.answers.all()
     data['html_answers_list'] = render_to_string('faq_app/partial/answer_list.html', {
-        'answers': answers, 'group' : group,
+        'answers': answers, 'group': group,
     })
     data['group_id'] = answer.group.pk
 
     return JsonResponse(data)
+
 
 def get_answer_string(group):
     line = ''
@@ -218,6 +229,7 @@ def get_answer_string(group):
     line = line[:-2]
 
     return line
+
 
 def create_json(request, pk):
     topic = get_object_or_404(Topic, pk=pk)
@@ -232,6 +244,7 @@ def create_json(request, pk):
             data.update({question.text: answers_string})
 
     return JsonResponse(data)
+
 
 # When the answer already exists
 def create_button_pk(request, pk):
@@ -248,10 +261,10 @@ def create_button_pk(request, pk):
             buttn.save()
 
             data["html_buttons_list"] = render_to_string('faq_app/partial/buttons_list.html',
-            {'answer':answer}
-            )
+                                                         {'answer': answer}
+                                                         )
 
-            #data['group_id'] = group.pk
+            # data['group_id'] = group.pk
 
             data['form_is_valid'] = True
 
@@ -260,18 +273,19 @@ def create_button_pk(request, pk):
     else:
         form = ButtonForm()
 
-    context = {'form': form, 'pk':pk, 'answer':answer }
+    context = {'form': form, 'pk': pk, 'answer': answer}
 
     data['html_form'] = render_to_string('faq_app/partial/create_button_form.html',
-        context,
-        request=request,
-    )
+                                         context,
+                                         request=request,
+                                         )
 
     return JsonResponse(data)
 
 
 # Store buttons in session untill answer is created
 buttonList = []
+
 
 def create_button(request):
     data = dict()
@@ -283,8 +297,8 @@ def create_button(request):
             request.session["buttons"] = buttonList
 
             data["html_buttons_list"] = render_to_string('faq_app/partial/buttons_list.html',
-            {'buttonList':buttonList}
-            )
+                                                         {'buttonList': buttonList}
+                                                         )
 
             data['form_is_valid'] = True
 
@@ -296,11 +310,12 @@ def create_button(request):
         context = {'form': form}
 
         data['html_form'] = render_to_string('faq_app/partial/create_button_form.html',
-            context,
-            request=request,
-        )
+                                             context,
+                                             request=request,
+                                             )
 
     return JsonResponse(data)
+
 
 def topic_datetime(request, pk):
     topic = get_object_or_404(Topic, pk=pk)
@@ -308,8 +323,8 @@ def topic_datetime(request, pk):
     data = dict()
 
     if request.method == "POST":
-        raw_dt = request.POST.get('datetime','')
-        dt = datetime.strptime(raw_dt,'%Y-%m-%d - %H:%M')
+        raw_dt = request.POST.get('datetime', '')
+        dt = datetime.strptime(raw_dt, '%Y-%m-%d - %H:%M')
         print(dt)
 
         topic.datetime = dt
@@ -321,3 +336,15 @@ def topic_datetime(request, pk):
         data['str_datetime'] = str_dt
 
     return JsonResponse(data)
+
+
+def update_question_name(request, pk):
+    text = request.POST.get('text', None)
+
+    if text != '':
+        group = get_object_or_404(Group, pk=pk)
+        first = group.questions.first()
+        first.text = text
+        first.save()
+
+    return JsonResponse({'':''})

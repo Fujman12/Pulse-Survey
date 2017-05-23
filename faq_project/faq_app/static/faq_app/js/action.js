@@ -110,7 +110,26 @@ $(function () {
 
   })
 
-  var i = '<i class="icon mdi mdi-chevron-down"></i>'
+  var i = '<i class="icon mdi mdi-chevron-down"></i>';
+
+  $('.input').on('change', function () {
+      var new_header = ($(this).val());
+      var group_id = $(this).attr("group-id");
+
+      if (new_header != null) {
+      $('a[href$="#collapse-'+ group_id + '"]').html(i + new_header);
+      }
+
+      $.ajax({
+          url:'faq/update_question_name/' + group_id,
+          type:'post',
+          data: {text:new_header},
+          success: function(){
+
+          }
+      })
+
+  })
 
   $(".tkn")
 

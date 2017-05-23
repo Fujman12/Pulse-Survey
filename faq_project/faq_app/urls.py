@@ -24,4 +24,9 @@ urlpatterns = [
     url(r'create_button/', views.create_button, name="create_button"),
 
     url(r'topic_datetime/(?P<pk>[0-9]+)', views.topic_datetime, name="topic_datetime"),
+
+    #new
+    url(r'update_question_name/(?P<pk>[0-9]+)', views.update_question_name, name="update_question_name")
+
+
 ]
